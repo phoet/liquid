@@ -21,7 +21,13 @@ class AssignTest < Test::Unit::TestCase
 
   def test_assign_syntax_error
     assert_match_syntax_error(/assign/,
-                       '{% assign foo not values %}.',
-                       'values' => "foo,bar,baz")
+                              '{% assign foo not values %}.',
+                              'values' => "foo,bar,baz")
   end
-end # AssignTest
+
+  def test_dotted_variable
+    template = "Original title: {{ page.title }}\n{% assign page.title = 'bar baz' %}\nNew title: {{ page.title }}"
+
+    assert_template_result("Original title: foo\n\nNew title: foo", template, 'page' => {'title' => 'foo'})
+  end
+end
